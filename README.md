@@ -1,4 +1,4 @@
-# 🎓 Projeto de Extensão: Monitoria Online — IFSP
+﻿# 🎓 Projeto de Extensão: Monitoria Online — IFSP
 
 > **Módulo Oficial de Gerenciamento, Agendamento e Atendimento de Monitorias Acadêmicas**  
 > **Instituto Federal de Educação, Ciência e Tecnologia de São Paulo (IFSP)**  
@@ -60,6 +60,25 @@ O projeto é gerenciado via metodologia ágil **Scrum** no Jira Oficial ([gabrie
 * `SCRUM-69` (US03): Agendamento e Salas de Monitoria (8 SP)
 * `SCRUM-73` (US04): Painéis Dedicados para Aluno e Monitor (5 SP)
 * `SCRUM-77` (US05): Central de Dúvidas e Fórum Rápido de Suporte (5 SP)
+
+---
+
+
+---
+
+## ☁️ Deploy do Moodle-Base no Render (Infraestrutura como Código)
+
+O repositório contém a infraestrutura completa de conteinerização Docker e Blueprint pronta para nuvem no **Render**:
+
+* 📄 **`Dockerfile`**: Imagem PHP 8.2 Apache com todas as extensões do Moodle (`intl`, `gd`, `zip`, `soap`, `opcache`, `pgsql`, `mysqli`, `exif`, `bcmath`).
+* 📄 **`render.yaml`**: Declaração IaC do Web Service e do banco de dados relacional PostgreSQL (`moodle-db`).
+* 📄 **`docker/entrypoint.sh`**: Script de inicialização automática que configura portas dinâmicas, valida conexão com o banco e executa instalação/migração do plugin `local/monitoria`.
+
+### Como ativar o deploy no Render em 1 clique:
+1. Acesse o painel do [Render Dashboard](https://dashboard.render.com).
+2. Clique em **New +** > **Blueprint**.
+3. Selecione o repositório GEN-Corp/Moodle-Base (branch main ou sprint-1-monitoria-online).
+4. O Render detectará automaticamente o arquivo `render.yaml`, provisionará o banco PostgreSQL e subirá o container do Moodle com o plugin `local/monitoria` integrado.
 
 ---
 

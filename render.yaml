@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: moodle-base
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 80
+      - key: DATABASE_URL
+        fromDatabase:
+          name: moodle-db
+          property: connectionString
+      - key: MOODLE_ADMIN_USER
+        value: admin
+      - key: MOODLE_ADMIN_PASS
+        value: Admin@IFSP2026
+      - key: MOODLE_ADMIN_EMAIL
+        value: admin@ifsp.edu.br
+
+databases:
+  - name: moodle-db
+    plan: free
+    region: oregon
+    databaseName: moodle
+    user: moodle
