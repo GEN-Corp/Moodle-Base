@@ -16,6 +16,13 @@
 
 if (file_exists(__DIR__ . '/../../config.php')) {
     require_once(__DIR__ . '/../../config.php');
+    if (!empty($PAGE)) {
+        $PAGE->set_url(new moodle_url('/local/monitoria/duvidas.php'));
+        $PAGE->set_context(\context_system::instance());
+        $PAGE->set_pagelayout('standard');
+        $PAGE->set_title('Central de Dúvidas — Monitoria Online');
+        $PAGE->set_heading('Central de Dúvidas & Fórum');
+    }
 } else {
     if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
 }

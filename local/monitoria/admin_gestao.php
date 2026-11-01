@@ -16,6 +16,13 @@
 
 if (file_exists(__DIR__ . '/../../config.php')) {
     require_once(__DIR__ . '/../../config.php');
+    if (!empty($PAGE)) {
+        $PAGE->set_url(new moodle_url('/local/monitoria/admin_gestao.php'));
+        $PAGE->set_context(\context_system::instance());
+        $PAGE->set_pagelayout('standard');
+        $PAGE->set_title('Gestão de Disciplinas & Monitores — Monitoria Online');
+        $PAGE->set_heading('Gestão de Disciplinas & Monitores');
+    }
 } else {
     if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
 }

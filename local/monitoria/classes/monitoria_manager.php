@@ -119,6 +119,28 @@ class monitoria_manager {
         return database_helper::get_records('local_monitoria_bookings');
     }
 
+    public static function update_booking_status(int $booking_id, string $status, ?int $attended = null, ?string $notes = null): bool {
+        $bookings = database_helper::get_records('local_monitoria_bookings', ['id' => $booking_id]);
+        if (empty($bookings)) return false;
+        $b = $bookings[0];
+        $b['status'] = $status;
+        if ($attended !== null) {
+            $b['attended'] = $attended;
+        }
+        if ($notes !== null) {
+            $b['notes'] = trim($notes);
+        }
+        return database_helper::update_record('local_monitoria_bookings', $b);
+    }
+
+    public static function get_bookings_for_monitor(string $monitor_name = ''): array {
+        $bookings = self::get_all_bookings();
+        if (!empty($monitor_name)) {
+            $bookings = array_filter($bookings, fn($b) => stripos($b['monitor_name'] ?? '', $monitor_name) !== false);
+        }
+        return array_values($bookings);
+    }
+
     // --- DOUBTS / FÓRUM ---
     public static function get_all_doubts(?int $course_id = null): array {
         $doubts = database_helper::get_records('local_monitoria_doubts');

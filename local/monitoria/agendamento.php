@@ -16,6 +16,13 @@
 
 if (file_exists(__DIR__ . '/../../config.php')) {
     require_once(__DIR__ . '/../../config.php');
+    if (!empty($PAGE)) {
+        $PAGE->set_url(new moodle_url('/local/monitoria/agendamento.php'));
+        $PAGE->set_context(\context_system::instance());
+        $PAGE->set_pagelayout('standard');
+        $PAGE->set_title('Agendamentos — Monitoria Online');
+        $PAGE->set_heading('Agendamento de Monitorias');
+    }
 } else {
     if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
 }

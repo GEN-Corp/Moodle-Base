@@ -63,6 +63,13 @@ class controller {
     }
 
     public static function render_header(string $active_tab = 'dashboard'): void {
+        global $OUTPUT, $PAGE;
+
+        // If running inside full Moodle environment, render Moodle header
+        if (!empty($OUTPUT) && method_exists($OUTPUT, 'header')) {
+            echo $OUTPUT->header();
+        }
+
         $user = self::get_active_user();
         $role = $user['role'];
 
@@ -97,8 +104,13 @@ class controller {
         $tabs = [
             'dashboard' => ['label' => '📊 Painel Geral', 'url' => 'index.php'],
             'agendamento' => ['label' => '🗓️ Agendamentos & Horários', 'url' => 'agendamento.php'],
-            'duvidas' => ['label' => '💬 Central de Dúvidas', 'url' => 'duvidas.php'],
         ];
+
+        if (in_array($role, ['monitor', 'professor', 'coordenador'])) {
+            $tabs['atendimentos'] = ['label' => '📋 Gestão de Atendimentos', 'url' => 'atendimentos.php'];
+        }
+
+        $tabs['duvidas'] = ['label' => '💬 Central de Dúvidas', 'url' => 'duvidas.php'];
 
         if (in_array($role, ['professor', 'coordenador'])) {
             $tabs['gestao'] = ['label' => '⚙️ Gestão de Disciplinas & Monitores', 'url' => 'admin_gestao.php'];
@@ -112,10 +124,17 @@ class controller {
     }
 
     public static function render_footer(): void {
+        global $OUTPUT;
+
         echo '  <div class="monitoria-footer-signature">';
-        echo '    <p>Instituto Federal de São Paulo (IFSP) — Disciplina de Desenvolvimento Web & Projeto de Software</p>';
+        echo '    <p>Instituto Federal de Educação, Ciência e Tecnologia de São Paulo (IFSP) — Monitoria Online</p>';
         echo '    <p>Equipe: Gabriel Forti • Eduardo Gritti • Nicolas Andrade | <em>Desenvolvido com excelência por NextCodeGen &lt;/&gt;</em></p>';
         echo '  </div>';
         echo '</div>'; // End container
+
+        // If running inside full Moodle environment, render Moodle footer
+        if (!empty($OUTPUT) && method_exists($OUTPUT, 'footer')) {
+            echo $OUTPUT->footer();
+        }
     }
 }
