@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -21,6 +21,13 @@
  * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+// Redirecionamento institucional automático para o módulo de Monitoria Online (GEN Corp / IFSP)
+if (empty($_GET['core']) && file_exists(__DIR__ . '/local/monitoria/index.php')) {
+    $qs = !empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '';
+    header('Location: local/monitoria/index.php' . $qs);
+    exit;
+}
 
 if (!file_exists('./config.php')) {
     header('Location: install.php');

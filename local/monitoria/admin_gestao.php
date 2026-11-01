@@ -15,13 +15,17 @@
  */
 
 if (file_exists(__DIR__ . '/../../config.php')) {
-    require_once(__DIR__ . '/../../config.php');
-    if (!empty($PAGE)) {
-        $PAGE->set_url(new moodle_url('/local/monitoria/admin_gestao.php'));
-        $PAGE->set_context(\context_system::instance());
-        $PAGE->set_pagelayout('standard');
-        $PAGE->set_title('Gestão de Disciplinas & Monitores — Monitoria Online');
-        $PAGE->set_heading('Gestão de Disciplinas & Monitores');
+    try {
+        require_once(__DIR__ . '/../../config.php');
+        if (!empty($PAGE)) {
+            $PAGE->set_url(new moodle_url('/local/monitoria/admin_gestao.php'));
+            $PAGE->set_context(\context_system::instance());
+            $PAGE->set_pagelayout('standard');
+            $PAGE->set_title('Gestão de Disciplinas & Monitores — Monitoria Online');
+            $PAGE->set_heading('Gestão de Disciplinas & Monitores');
+        }
+    } catch (\Throwable $e) {
+        if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
     }
 } else {
     if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
@@ -73,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $courses = monitoria_manager::get_all_courses();
 $monitors = monitoria_manager::get_all_monitors();
 
-controller::render_header('gestao');
+controller::render_header('gestao', 'Gestão de Disciplinas & Monitores');
 ?>
 
 <?php if ($feedback_msg): ?>
@@ -99,12 +103,12 @@ controller::render_header('gestao');
         <input type="text" name="name" class="form-control-mo" placeholder="Ex: Algoritmos e Estruturas de Dados" required>
       </div>
       <div class="form-group">
-        <label>Departamento / Coordenadoria</label>
-        <input type="text" name="department" class="form-control-mo" value="Coordenadoria de Informática">
+        <label>Departamento / Área</label>
+        <input type="text" name="department" class="form-control-mo" value="Informática" required>
       </div>
       <div class="form-group">
         <label>Carga Horária Semestral (Horas)</label>
-        <input type="number" name="workload" class="form-control-mo" value="80">
+        <input type="number" name="workload" class="form-control-mo" value="80" required>
       </div>
       <button type="submit" class="btn-mo btn-mo-primary" style="width:100%;">Salvar Disciplina</button>
     </form>
@@ -113,20 +117,20 @@ controller::render_header('gestao');
   <!-- FORM: VINCULAR MONITOR -->
   <div class="card-box">
     <h2 style="font-size:1.25rem; font-weight:700; margin-top:0; margin-bottom:1rem; border-bottom:1px solid var(--mo-border); padding-bottom:0.5rem;">
-      👨‍💻 Designar Monitor
+      👨‍💻 Homologar Monitor Acadêmico
     </h2>
     <form method="POST" action="">
       <input type="hidden" name="action" value="vincular_monitor">
       <div class="form-group">
-        <label>Nome do Aluno Monitor</label>
-        <input type="text" name="name" class="form-control-mo" placeholder="Ex: Gabriel Forti" required>
+        <label>Nome Completo do Monitor</label>
+        <input type="text" name="name" class="form-control-mo" placeholder="Nome do estudante bolsista/voluntário" required>
       </div>
       <div class="form-group">
-        <label>E-mail Institucional</label>
-        <input type="email" name="email" class="form-control-mo" placeholder="nome@aluno.ifsp.edu.br" required>
+        <label>E-mail Institucional (@aluno.ifsp.edu.br)</label>
+        <input type="email" name="email" class="form-control-mo" placeholder="usuario@aluno.ifsp.edu.br" required>
       </div>
       <div class="form-group">
-        <label>Disciplina Designada</label>
+        <label>Disciplina Atribuída</label>
         <select name="course_id" class="form-control-mo" required>
           <?php foreach ($courses as $c): ?>
             <option value="<?php echo $c['id']; ?>"><?php echo htmlspecialchars($c['code'] . ' - ' . $c['name']); ?></option>
@@ -134,14 +138,18 @@ controller::render_header('gestao');
         </select>
       </div>
       <div class="form-group">
-        <label>Link Google Meet Padrão</label>
-        <input type="url" name="meet_link" class="form-control-mo" placeholder="https://meet.google.com/..." value="https://meet.google.com/ifsp-monitoria">
+        <label>Carga Semanal de Monitoria</label>
+        <input type="number" name="weekly_hours" class="form-control-mo" value="12" required>
       </div>
       <div class="form-group">
-        <label>Local Físico / Laboratório</label>
-        <input type="text" name="location" class="form-control-mo" placeholder="Laboratório 4 / Online" value="Laboratório 2 - IFSP">
+        <label>Link Permanente do Google Meet</label>
+        <input type="url" name="meet_link" class="form-control-mo" placeholder="https://meet.google.com/xxx-yyyy-zzz" required>
       </div>
-      <button type="submit" class="btn-mo btn-mo-primary" style="width:100%;">Vincular Monitor Oficial</button>
+      <div class="form-group">
+        <label>Local Presencial / Laboratório</label>
+        <input type="text" name="location" class="form-control-mo" value="Laboratório 3 / Online via Meet" required>
+      </div>
+      <button type="submit" class="btn-mo btn-mo-primary" style="width:100%;">Homologar e Vincular Monitor</button>
     </form>
   </div>
 </div>
@@ -149,8 +157,8 @@ controller::render_header('gestao');
 <!-- LISTAGEM DE MONITORES ATIVOS -->
 <div class="card-box">
   <div class="card-header-flex">
-    <h2>Quadro de Monitores Oficiais e Matérias</h2>
-    <span class="badge badge-success"><?php echo count($monitors); ?> Monitores Ativos</span>
+    <h2>Monitores Ativos e Atribuições</h2>
+    <span class="badge badge-confirmado"><?php echo count($monitors); ?> Monitores Cadastrados</span>
   </div>
   <div class="table-responsive">
     <table class="table-mo">
@@ -159,8 +167,8 @@ controller::render_header('gestao');
           <th>Monitor</th>
           <th>E-mail</th>
           <th>Disciplina</th>
-          <th>Carga Semanal</th>
-          <th>Local / Sala Virtual</th>
+          <th>Carga Horária</th>
+          <th>Link Meet</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -170,12 +178,13 @@ controller::render_header('gestao');
             <td><strong><?php echo htmlspecialchars($m['name']); ?></strong></td>
             <td><?php echo htmlspecialchars($m['email']); ?></td>
             <td><span class="badge badge-neutral"><?php echo htmlspecialchars($m['course_name']); ?></span></td>
-            <td><?php echo $m['weekly_hours']; ?>h / semana</td>
+            <td><?php echo $m['weekly_hours']; ?>h semanais</td>
             <td>
-              <?php echo htmlspecialchars($m['location'] ?? 'Lab IFSP'); ?><br>
-              <small><a href="<?php echo htmlspecialchars($m['meet_link']); ?>" target="_blank" rel="noopener noreferrer" style="color:var(--mo-primary);">Sala Virtual</a></small>
+              <a href="<?php echo htmlspecialchars($m['meet_link']); ?>" target="_blank" rel="noopener noreferrer" style="color:var(--mo-primary); font-weight:600;">
+                🔗 Acessar Sala
+              </a>
             </td>
-            <td><span class="badge badge-success"><?php echo ucfirst($m['status']); ?></span></td>
+            <td><span class="badge badge-confirmado">Ativo</span></td>
           </tr>
         <?php endforeach; ?>
       </tbody>

@@ -15,13 +15,17 @@
  */
 
 if (file_exists(__DIR__ . '/../../config.php')) {
-    require_once(__DIR__ . '/../../config.php');
-    if (!empty($PAGE)) {
-        $PAGE->set_url(new moodle_url('/local/monitoria/duvidas.php'));
-        $PAGE->set_context(\context_system::instance());
-        $PAGE->set_pagelayout('standard');
-        $PAGE->set_title('Central de Dúvidas — Monitoria Online');
-        $PAGE->set_heading('Central de Dúvidas & Fórum');
+    try {
+        require_once(__DIR__ . '/../../config.php');
+        if (!empty($PAGE)) {
+            $PAGE->set_url(new moodle_url('/local/monitoria/duvidas.php'));
+            $PAGE->set_context(\context_system::instance());
+            $PAGE->set_pagelayout('standard');
+            $PAGE->set_title('Central de Dúvidas — Monitoria Online');
+            $PAGE->set_heading('Central de Dúvidas & Fórum');
+        }
+    } catch (\Throwable $e) {
+        if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
     }
 } else {
     if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
@@ -64,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!empty($reply)) {
             monitoria_manager::reply_doubt($doubt_id, $replied_by, $reply);
-            $feedback_msg = ['type' => 'success', 'text' => 'Resposta publicada com sucesso no fórum!'];
+            $feedback_msg = ['type' => 'success', 'text' => 'Resposta publicada com sucesso no fórum acadêmico!'];
         }
     }
 }
@@ -72,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $courses = monitoria_manager::get_all_courses();
 $doubts = monitoria_manager::get_all_doubts();
 
-controller::render_header('duvidas');
+controller::render_header('duvidas', 'Central de Dúvidas & Fórum Acadêmico');
 ?>
 
 <?php if ($feedback_msg): ?>
@@ -107,67 +111,80 @@ controller::render_header('duvidas');
     </div>
     <div class="form-group">
       <label>Título Resumido da Dúvida</label>
-      <input type="text" name="title" class="form-control-mo" placeholder="Ex: Dificuldade no exercício 3 sobre Herança em POO" required>
+      <input type="text" name="title" class="form-control-mo" placeholder="Ex: Dificuldade em normalização de banco de dados (3FN)" required>
     </div>
     <div class="form-group">
-      <label>Explicação Detalhada do Problema ou Código</label>
-      <textarea name="description" class="form-control-mo" style="min-height:90px;" placeholder="Explique o que tentou fazer, mensagens de erro ou dúvidas conceituais..." required></textarea>
+      <label>Descrição Detalhada do Problema ou Exercício</label>
+      <textarea name="description" class="form-control-mo" rows="4" style="height:auto;" placeholder="Explique o que você tentou fazer, mensagens de erro ou dúvidas conceituais..." required></textarea>
     </div>
-    <button type="submit" class="btn-mo btn-mo-primary">+ Publicar Dúvida</button>
+    <button type="submit" class="btn-mo btn-mo-primary">+ Publicar Dúvida no Fórum</button>
   </form>
 </div>
 
-<!-- FEED DE DÚVIDAS E RESPOSTAS -->
+<!-- LISTA DE DÚVIDAS E RESPOSTAS -->
 <div class="card-box">
   <div class="card-header-flex">
-    <h2>Fórum de Dúvidas Acadêmicas (<?php echo count($doubts); ?> tópicos)</h2>
+    <h2>Fórum de Perguntas e Respostas da Monitoria</h2>
+    <span class="badge badge-confirmado"><?php echo count($doubts); ?> Tópicos Cadastrados</span>
   </div>
 
   <?php if (!empty($doubts)): ?>
     <?php foreach ($doubts as $d): ?>
       <?php $is_respondida = ($d['status'] === 'respondida'); ?>
-      <div style="border:1px solid var(--mo-border); border-radius:12px; padding:1.25rem; margin-bottom:1.25rem; background:var(--mo-card-bg); box-shadow:var(--mo-shadow-sm);">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem;">
+      <div style="border:1px solid var(--mo-border); border-radius:12px; padding:1.5rem; margin-bottom:1.5rem; background:#FFFFFF;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem;">
           <div>
-            <span class="badge badge-neutral" style="margin-bottom:0.25rem;"><?php echo htmlspecialchars($d['course_name']); ?></span>
-            <h3 style="margin:0.25rem 0 0 0; font-size:1.15rem; color:var(--mo-text-main);"><?php echo htmlspecialchars($d['title']); ?></h3>
+            <span class="badge badge-neutral" style="margin-bottom:0.5rem;"><?php echo htmlspecialchars($d['course_name']); ?></span>
+            <h3 style="margin:0.25rem 0 0 0; font-size:1.2rem; color:var(--mo-text-main);"><?php echo htmlspecialchars($d['title']); ?></h3>
           </div>
-          <span class="badge <?php echo $is_respondida ? 'badge-success' : 'badge-warning'; ?>">
-            <?php echo $is_respondida ? 'Respondida' : 'Pendente de Resposta'; ?>
+          <span class="badge <?php echo $is_respondida ? 'badge-confirmado' : 'badge-pendente'; ?>">
+            <?php echo $is_respondida ? 'Respondida' : 'Aguardando Resposta'; ?>
           </span>
         </div>
 
-        <p style="color:var(--mo-text-muted); font-size:0.95rem; line-height:1.5; margin:0.75rem 0;">
+        <p style="color:var(--mo-text-muted); font-size:0.95rem; line-height:1.5; margin:0 0 1rem 0;">
           <?php echo nl2br(htmlspecialchars($d['description'])); ?>
         </p>
-        <small style="color:var(--mo-text-subtle);">Postado por <strong><?php echo htmlspecialchars($d['student_name']); ?></strong></small>
 
-        <!-- RESPOSTA SE HOUVER -->
+        <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:var(--mo-text-subtle); margin-bottom:1rem;">
+          <span>👤 Autor: <strong><?php echo htmlspecialchars($d['student_name']); ?></strong></span>
+          <span>•</span>
+          <span>📅 <?php echo date('d/m/Y H:i', $d['timecreated'] ?? time()); ?></span>
+        </div>
+
         <?php if (!empty($d['reply'])): ?>
-          <div style="margin-top:1rem; padding:1rem; background:var(--mo-primary-light); border-left:4px solid var(--mo-primary); border-radius:0 8px 8px 0;">
-            <div style="font-weight:700; color:var(--mo-primary); font-size:0.9rem; margin-bottom:0.25rem;">
-              💬 Resposta de <?php echo htmlspecialchars($d['replied_by']); ?>:
+          <!-- RESPOSTA DO MONITOR -->
+          <div style="background:var(--mo-primary-light); border-left:4px solid var(--mo-primary); padding:1rem 1.25rem; border-radius:0 8px 8px 0; margin-top:1rem;">
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.35rem;">
+              <span style="font-weight:700; color:var(--mo-primary); font-size:0.9rem;">
+                👨‍🏫 Resposta de <?php echo htmlspecialchars($d['replied_by']); ?>:
+              </span>
             </div>
             <p style="margin:0; font-size:0.925rem; color:var(--mo-text-main); line-height:1.5;">
               <?php echo nl2br(htmlspecialchars($d['reply'])); ?>
             </p>
           </div>
-        <?php elseif (in_array($role, ['monitor', 'professor', 'coordenador'])): ?>
-          <!-- FORM PARA O MONITOR RESPONDER -->
-          <form method="POST" action="" style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--mo-border);">
-            <input type="hidden" name="action" value="responder_duvida">
-            <input type="hidden" name="doubt_id" value="<?php echo $d['id']; ?>">
-            <input type="hidden" name="replied_by" value="<?php echo ($role === 'monitor') ? 'Eduardo Gritti (Monitor)' : 'Prof. Caio'; ?>">
-            <div class="form-group" style="margin-bottom:0.5rem;">
-              <textarea name="reply" class="form-control-mo" style="min-height:70px;" placeholder="Digite aqui a resposta e explicação para o aluno..." required></textarea>
-            </div>
-            <button type="submit" class="btn-mo btn-mo-primary" style="min-height:38px; font-size:0.875rem;">Enviar Resposta Oficial</button>
-          </form>
+        <?php else: ?>
+          <!-- ÁREA PARA RESPONDER SE FOR MONITOR OU PROFESSOR -->
+          <?php if (in_array($role, ['monitor', 'professor', 'coordenador'])): ?>
+            <form method="POST" action="" style="background:var(--mo-bg); padding:1rem; border-radius:8px; border:1px solid var(--mo-border); margin-top:1rem;">
+              <input type="hidden" name="action" value="responder_duvida">
+              <input type="hidden" name="doubt_id" value="<?php echo $d['id']; ?>">
+              <input type="hidden" name="replied_by" value="<?php echo $user['name'] . ' (' . ucfirst($role) . ')'; ?>">
+              <label style="font-weight:600; font-size:0.875rem; display:block; margin-bottom:0.5rem;">
+                Responder a esta dúvida como <?php echo ucfirst($role); ?>:
+              </label>
+              <textarea name="reply" class="form-control-mo" rows="2" style="height:auto; margin-bottom:0.5rem;" placeholder="Digite a explicação ou orientação pedagógica..." required></textarea>
+              <button type="submit" class="btn-mo btn-mo-primary" style="min-height:38px; padding:0.35rem 1rem; font-size:0.875rem;">
+                Publicar Resposta Oficial
+              </button>
+            </form>
+          <?php endif; ?>
         <?php endif; ?>
       </div>
     <?php endforeach; ?>
   <?php else: ?>
-    <p style="color:var(--mo-text-muted); text-align:center; padding:2rem 0;">Nenhuma dúvida cadastrada ainda.</p>
+    <p style="color:var(--mo-text-muted);">Nenhuma dúvida enviada até o momento. Seja o primeiro a postar!</p>
   <?php endif; ?>
 </div>
 

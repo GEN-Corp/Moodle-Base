@@ -15,19 +15,20 @@
  */
 
 if (file_exists(__DIR__ . '/../../config.php')) {
-    require_once(__DIR__ . '/../../config.php');
-    if (!empty($PAGE)) {
-        $PAGE->set_url(new moodle_url('/local/monitoria/index.php'));
-        $PAGE->set_context(\context_system::instance());
-        $PAGE->set_pagelayout('standard');
-        $PAGE->set_title('Monitoria Online — IFSP');
-        $PAGE->set_heading('Monitoria Online');
+    try {
+        require_once(__DIR__ . '/../../config.php');
+        if (!empty($PAGE)) {
+            $PAGE->set_url(new moodle_url('/local/monitoria/index.php'));
+            $PAGE->set_context(\context_system::instance());
+            $PAGE->set_pagelayout('standard');
+            $PAGE->set_title('Monitoria Online — IFSP');
+            $PAGE->set_heading('Monitoria Online');
+        }
+    } catch (\Throwable $e) {
+        if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
     }
 } else {
-    // Standalone fallback definition
-    if (!defined('MOODLE_INTERNAL')) {
-        define('MOODLE_INTERNAL', true);
-    }
+    if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
 }
 
 require_once(__DIR__ . '/classes/controller.php');
@@ -43,7 +44,7 @@ $slots = monitoria_manager::get_available_slots();
 $bookings = monitoria_manager::get_all_bookings();
 $doubts = monitoria_manager::get_all_doubts();
 
-controller::render_header('dashboard');
+controller::render_header('dashboard', 'Painel Geral — Monitoria Online');
 ?>
 
 <!-- METRICS OVERVIEW -->
@@ -78,6 +79,44 @@ controller::render_header('dashboard');
   </div>
 </div>
 
+<!-- COURSE CARDS CATALOG -->
+<div class="card-box">
+  <div class="card-header-flex">
+    <h2>Disciplinas e Monitores do Semestre</h2>
+    <a href="agendamento.php?role=<?php echo $role; ?>" class="btn-mo btn-mo-primary">Ver Todos os Horários</a>
+  </div>
+  <div class="course-grid">
+    <?php foreach (monitoria_manager::get_all_courses() as $c): ?>
+      <?php
+        $mon = array_values(array_filter(monitoria_manager::get_all_monitors(), fn($m) => (int)$m['course_id'] === (int)$c['id']))[0] ?? null;
+      ?>
+      <div class="moodle-course-card">
+        <div class="course-card-banner">
+          <span class="course-code-badge"><?php echo htmlspecialchars($c['code']); ?></span>
+          <span class="badge badge-confirmado">Carga: <?php echo $c['workload']; ?>h</span>
+        </div>
+        <div class="course-card-body">
+          <h3><?php echo htmlspecialchars($c['name']); ?></h3>
+          <div class="course-meta">
+            <span><strong>Departamento:</strong> <?php echo htmlspecialchars($c['department']); ?></span><br>
+            <span><strong>Monitor:</strong> <?php echo $mon ? htmlspecialchars($mon['name']) : 'A definir'; ?></span>
+          </div>
+          <div class="course-card-actions">
+            <?php if ($mon && !empty($mon['meet_link'])): ?>
+              <a href="<?php echo htmlspecialchars($mon['meet_link']); ?>" target="_blank" rel="noopener noreferrer" class="btn-mo btn-mo-secondary" style="flex:1; min-height:42px; font-size:0.875rem;">
+                🔗 Sala Meet
+              </a>
+            <?php endif; ?>
+            <a href="agendamento.php?role=<?php echo $role; ?>&course_id=<?php echo $c['id']; ?>" class="btn-mo btn-mo-primary" style="flex:1; min-height:42px; font-size:0.875rem;">
+              🗓️ Agendar
+            </a>
+          </div>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  </div>
+</div>
+
 <?php if ($role === 'aluno'): ?>
 <!-- VISÃO DO ALUNO -->
 <div class="card-box">
@@ -99,11 +138,19 @@ controller::render_header('dashboard');
       <tbody>
         <?php if (!empty($bookings)): ?>
           <?php foreach ($bookings as $b): ?>
+            <?php
+              $st = strtolower($b['status'] ?? 'agendado');
+              $badge_cls = 'badge-agendado';
+              if ($st === 'confirmado') $badge_cls = 'badge-confirmado';
+              if ($st === 'pendente') $badge_cls = 'badge-pendente';
+              if ($st === 'concluido') $badge_cls = 'badge-concluido';
+              if ($st === 'recusado') $badge_cls = 'badge-recusado';
+            ?>
             <tr>
               <td><strong><?php echo htmlspecialchars($b['course_name']); ?></strong></td>
               <td><?php echo htmlspecialchars($b['monitor_name']); ?></td>
               <td>📅 <?php echo htmlspecialchars($b['date_slot']); ?> às <?php echo htmlspecialchars($b['time_slot']); ?></td>
-              <td><span class="badge badge-success"><?php echo ucfirst($b['status']); ?></span></td>
+              <td><span class="badge <?php echo $badge_cls; ?>"><?php echo ucfirst($st); ?></span></td>
               <td>
                 <a href="duvidas.php?role=aluno" class="btn-mo btn-mo-secondary" style="min-height:36px; padding:0.25rem 0.75rem; font-size:0.85rem;">Enviar Dúvida Prévia</a>
               </td>
@@ -146,9 +193,9 @@ controller::render_header('dashboard');
               <small><a href="<?php echo htmlspecialchars($s['meet_url']); ?>" target="_blank" rel="noopener noreferrer" style="color:var(--mo-primary); font-weight:600;">🔗 Entrar na Sala</a></small>
             </td>
             <td><span class="badge badge-neutral"><?php echo $s['current_bookings']; ?> / <?php echo $s['max_capacity']; ?> inscritos</span></td>
-            <td><span class="badge badge-success">Disponível</span></td>
+            <td><span class="badge badge-confirmado">Disponível</span></td>
             <td>
-              <button class="btn-mo btn-mo-secondary" style="min-height:36px; padding:0.25rem 0.75rem; font-size:0.85rem;">Ver Lista de Alunos</button>
+              <a href="atendimentos.php?role=monitor" class="btn-mo btn-mo-secondary" style="min-height:36px; padding:0.25rem 0.75rem; font-size:0.85rem;">Gerenciar Alunos</a>
             </td>
           </tr>
         <?php endforeach; ?>
@@ -190,7 +237,7 @@ controller::render_header('dashboard');
               ?>
             </td>
             <td><?php echo count(array_filter($slots, fn($s) => (int)$s['course_id'] === (int)$c['id'])); ?> sessões semanais</td>
-            <td><span class="badge badge-success">Ativa</span></td>
+            <td><span class="badge badge-confirmado">Ativa</span></td>
           </tr>
         <?php endforeach; ?>
       </tbody>
@@ -210,7 +257,7 @@ controller::render_header('dashboard');
       <div style="padding: 1rem 0; border-bottom: 1px solid var(--mo-border);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.25rem;">
           <h4 style="margin:0; font-size:1.05rem; color:var(--mo-text-main);"><?php echo htmlspecialchars($d['title']); ?></h4>
-          <span class="badge <?php echo ($d['status'] === 'respondida') ? 'badge-success' : 'badge-warning'; ?>"><?php echo ucfirst($d['status']); ?></span>
+          <span class="badge <?php echo ($d['status'] === 'respondida') ? 'badge-confirmado' : 'badge-pendente'; ?>"><?php echo ucfirst($d['status']); ?></span>
         </div>
         <p style="margin:0 0 0.5rem 0; font-size:0.9rem; color:var(--mo-text-muted);"><?php echo htmlspecialchars($d['description']); ?></p>
         <small style="color:var(--mo-text-subtle);">Por <strong><?php echo htmlspecialchars($d['student_name']); ?></strong> em <em><?php echo htmlspecialchars($d['course_name']); ?></em></small>

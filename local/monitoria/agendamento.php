@@ -15,13 +15,17 @@
  */
 
 if (file_exists(__DIR__ . '/../../config.php')) {
-    require_once(__DIR__ . '/../../config.php');
-    if (!empty($PAGE)) {
-        $PAGE->set_url(new moodle_url('/local/monitoria/agendamento.php'));
-        $PAGE->set_context(\context_system::instance());
-        $PAGE->set_pagelayout('standard');
-        $PAGE->set_title('Agendamentos — Monitoria Online');
-        $PAGE->set_heading('Agendamento de Monitorias');
+    try {
+        require_once(__DIR__ . '/../../config.php');
+        if (!empty($PAGE)) {
+            $PAGE->set_url(new moodle_url('/local/monitoria/agendamento.php'));
+            $PAGE->set_context(\context_system::instance());
+            $PAGE->set_pagelayout('standard');
+            $PAGE->set_title('Agendamentos — Monitoria Online');
+            $PAGE->set_heading('Agendamento de Monitorias');
+        }
+    } catch (\Throwable $e) {
+        if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
     }
 } else {
     if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
@@ -82,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $type,
                 $meet_url
             );
-            $feedback_msg = ['type' => 'success', 'text' => 'Novo horário de monitoria publicado com sucesso!'];
+            $feedback_msg = ['type' => 'success', 'text' => 'Novo horário de monitoria publicado com sucesso na grade!'];
         }
     }
 }
@@ -91,7 +95,7 @@ $slots = monitoria_manager::get_available_slots();
 $bookings = monitoria_manager::get_all_bookings();
 $monitors = monitoria_manager::get_all_monitors();
 
-controller::render_header('agendamento');
+controller::render_header('agendamento', 'Agendamentos & Horários de Monitoria');
 ?>
 
 <?php if ($feedback_msg): ?>
@@ -153,7 +157,7 @@ controller::render_header('agendamento');
 <div class="card-box">
   <div class="card-header-flex">
     <h2>🗓️ Grade de Horários Disponíveis para Monitoria</h2>
-    <span class="badge badge-success"><?php echo count($slots); ?> Sessões Abertas</span>
+    <span class="badge badge-confirmado"><?php echo count($slots); ?> Sessões Abertas</span>
   </div>
   <p style="color:var(--mo-text-muted); font-size:0.95rem;">
     Escolha uma das sessões abaixo para garantir sua vaga presencial ou receber o link do Google Meet com o monitor.
@@ -165,11 +169,11 @@ controller::render_header('agendamento');
         $vagas_restantes = (int)$s['max_capacity'] - (int)$s['current_bookings'];
         $is_lotado = $vagas_restantes <= 0;
       ?>
-      <div style="border:1px solid var(--mo-border); border-radius:12px; padding:1.25rem; background:var(--mo-card-bg); display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--mo-shadow-sm);">
+      <div style="border:1px solid var(--mo-border); border-radius:12px; padding:1.25rem; background:#FFFFFF; display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--mo-shadow-sm);">
         <div>
           <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem;">
             <span class="badge badge-neutral"><?php echo htmlspecialchars($s['weekday']); ?></span>
-            <span class="badge <?php echo $is_lotado ? 'badge-danger' : 'badge-success'; ?>">
+            <span class="badge <?php echo $is_lotado ? 'badge-danger' : 'badge-confirmado'; ?>">
               <?php echo $is_lotado ? 'Lotado' : "$vagas_restantes vagas livres"; ?>
             </span>
           </div>

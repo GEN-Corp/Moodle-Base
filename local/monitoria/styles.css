@@ -1,169 +1,436 @@
 /**
- * Modern CSS styles for local_monitoria plugin
- * Design standard: NextCodeGen Protocol (Quiet Luxury, Mobile-First, Accessible)
+ * Moodle 4.x (Boost Theme) Official Styling for local_monitoria
+ * Standards: NextCodeGen Protocol (Quiet Luxury, Mobile-First, Accessible)
  */
 
 :root {
-  --mo-primary: #10664F;        /* IFSP Institutional Deep Green */
+  --mo-primary: #10664F;           /* IFSP Institutional Deep Green */
   --mo-primary-light: #EBF7F2;
   --mo-primary-hover: #0C4E3C;
-  --mo-secondary: #0D9488;      /* Teal Accent */
-  --mo-bg: #F8FAFC;
+  --mo-secondary: #0D9488;         /* Teal Accent */
+  --mo-bg: #F4F6F8;
   --mo-card-bg: #FFFFFF;
   --mo-border: #E2E8F0;
   --mo-border-hover: #CBD5E1;
-  --mo-text-main: #0F172A;
+  --mo-text-main: #1E293B;
   --mo-text-muted: #64748B;
   --mo-text-subtle: #94A3B8;
+  
   --mo-success: #16A34A;
   --mo-success-bg: #DCFCE7;
   --mo-warning: #D97706;
   --mo-warning-bg: #FEF3C7;
   --mo-danger: #DC2626;
   --mo-danger-bg: #FEE2E2;
+  --mo-info: #2563EB;
+  --mo-info-bg: #DBEAFE;
+  
   --mo-radius: 12px;
+  --mo-radius-sm: 8px;
   --mo-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
-  --mo-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --mo-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.03);
 }
 
-.monitoria-container {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 1.5rem 1rem;
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color: var(--mo-text-main);
   background-color: var(--mo-bg);
-  min-height: 80vh;
+  min-height: 100vh;
 }
 
-/* Header & Profile Switcher */
-.monitoria-header {
+/* 1. Moodle 4.x Top Navbar */
+.moodle-top-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 1.25rem;
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--mo-border);
+  box-shadow: var(--mo-shadow-sm);
+}
+
+.moodle-navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.moodle-drawer-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--mo-border);
+  border-radius: var(--mo-radius-sm);
+  background: transparent;
+  color: var(--mo-text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.moodle-drawer-toggle:hover {
+  background: var(--mo-bg);
+  color: var(--mo-primary);
+}
+
+.moodle-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--mo-text-main);
+}
+
+.moodle-logo-icon {
+  font-size: 1.6rem;
+}
+
+.moodle-brand-text {
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.moodle-brand-text strong {
+  color: var(--mo-primary);
+  font-weight: 800;
+}
+
+.moodle-version-tag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem;
+  background: var(--mo-primary-light);
+  color: var(--mo-primary);
+  border-radius: 4px;
+  font-weight: 700;
+  margin-left: 0.25rem;
+}
+
+.moodle-primary-nav {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 1rem;
+}
+
+@media (min-width: 900px) {
+  .moodle-primary-nav {
+    display: flex;
+  }
+}
+
+.moodle-primary-nav a {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: var(--mo-text-muted);
+  text-decoration: none;
+  border-radius: var(--mo-radius-sm);
+  transition: all 0.2s;
+}
+
+.moodle-primary-nav a:hover,
+.moodle-primary-nav a.active {
+  color: var(--mo-primary);
+  background: var(--mo-primary-light);
+}
+
+.moodle-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.profile-switch-dropdown select {
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--mo-radius-sm);
+  border: 1px solid var(--mo-border);
+  background: #FFFFFF;
+  color: var(--mo-text-main);
+  font-weight: 600;
+  font-size: 0.875rem;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.profile-switch-dropdown select:focus {
+  outline: none;
+  border-color: var(--mo-primary);
+}
+
+.moodle-user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--mo-primary);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #FFFFFF;
+  box-shadow: var(--mo-shadow-sm);
+}
+
+/* 2. Moodle 4.x Breadcrumbs Bar */
+.moodle-breadcrumbs-bar {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--mo-border);
+  padding: 0.65rem 1.5rem;
+}
+
+.moodle-breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+}
+
+.moodle-breadcrumbs a {
+  color: var(--mo-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.moodle-breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+.moodle-breadcrumbs .separator {
+  color: var(--mo-text-subtle);
+  font-size: 0.8rem;
+}
+
+.moodle-breadcrumbs .active-crumb {
+  color: var(--mo-text-muted);
+  font-weight: 600;
+}
+
+/* 3. Moodle 4.x Main Layout Wrapper with Sidebar Drawer */
+.moodle-layout-wrapper {
+  display: flex;
+  min-height: calc(100vh - 110px);
+}
+
+/* Sidebar Drawer */
+.moodle-drawer {
+  width: 280px;
+  background: #FFFFFF;
+  border-right: 1px solid var(--mo-border);
+  padding: 1.5rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  padding: 1.5rem;
-  background: var(--mo-card-bg);
+  transition: transform 0.3s ease, width 0.3s ease, margin-left 0.3s ease;
+  flex-shrink: 0;
+}
+
+body.drawer-collapsed .moodle-drawer {
+  margin-left: -280px;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--mo-border);
+}
+
+.drawer-header h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--mo-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.drawer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 1rem;
+  min-height: 48px;
+  border-radius: var(--mo-radius-sm);
+  color: var(--mo-text-main);
+  text-decoration: none;
+  font-size: 0.925rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.drawer-item:hover {
+  background: var(--mo-bg);
+  color: var(--mo-primary);
+  text-decoration: none;
+}
+
+.drawer-item.active {
+  background: var(--mo-primary-light);
+  color: var(--mo-primary);
+  border-left-color: var(--mo-primary);
+}
+
+.drawer-icon {
+  font-size: 1.2rem;
+  width: 24px;
+  text-align: center;
+}
+
+.drawer-footer-card {
+  margin-top: auto;
+  padding: 1rem;
+  background: var(--mo-bg);
+  border-radius: var(--mo-radius-sm);
   border: 1px solid var(--mo-border);
-  border-radius: var(--mo-radius);
-  box-shadow: var(--mo-shadow-sm);
-  margin-bottom: 1.5rem;
+  font-size: 0.825rem;
+  color: var(--mo-text-muted);
+}
+
+.drawer-footer-card p {
+  margin: 0 0 0.35rem 0;
+  color: var(--mo-text-main);
+}
+
+/* Main Content */
+.moodle-main-content {
+  flex: 1;
+  padding: 2rem 2rem 3rem 2rem;
+  max-width: 1300px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .moodle-drawer {
+    position: fixed;
+    top: 64px;
+    bottom: 0;
+    left: 0;
+    z-index: 999;
+    box-shadow: var(--mo-shadow-md);
+  }
+  body:not(.drawer-open) .moodle-drawer {
+    transform: translateX(-100%);
+  }
+  .moodle-main-content {
+    padding: 1rem;
+  }
+}
+
+/* Page Header */
+.moodle-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--mo-border);
 }
 
 @media (min-width: 768px) {
-  .monitoria-header {
+  .moodle-page-header {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
   }
 }
 
-.monitoria-title-group h1 {
-  font-size: 1.75rem;
-  font-weight: 700;
+.moodle-page-header h1 {
+  font-size: 1.85rem;
+  font-weight: 800;
+  margin: 0 0 0.35rem 0;
   color: var(--mo-text-main);
-  margin: 0 0 0.25rem 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  letter-spacing: -0.02em;
 }
 
-.monitoria-title-group p {
-  color: var(--mo-text-muted);
-  font-size: 0.925rem;
+.moodle-page-header .subtitle {
   margin: 0;
+  color: var(--mo-text-muted);
+  font-size: 0.95rem;
 }
 
-.profile-selector-box {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: var(--mo-bg);
-  padding: 0.5rem 0.75rem;
-  border-radius: 10px;
-  border: 1px solid var(--mo-border);
-}
-
-.profile-selector-box select {
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  border: 1px solid var(--mo-border);
-  background: #FFF;
-  font-weight: 600;
-  color: var(--mo-text-main);
-  min-height: 44px;
-}
-
-/* Navigation Tabs */
-.monitoria-nav-tabs {
-  display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  border-bottom: 2px solid var(--mo-border);
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.25rem;
-}
-
-.tab-link {
+.user-status-pill {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  min-height: 48px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  padding: 0.45rem 0.85rem;
+  background: #FFFFFF;
+  border: 1px solid var(--mo-border);
+  border-radius: 9999px;
+  font-size: 0.85rem;
   color: var(--mo-text-muted);
-  text-decoration: none;
-  border-radius: 8px 8px 0 0;
-  transition: all 0.2s ease-in-out;
-  border-bottom: 3px solid transparent;
 }
 
-.tab-link:hover {
-  color: var(--mo-primary);
-  background: var(--mo-primary-light);
-  text-decoration: none;
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mo-success);
 }
 
-.tab-link.active {
-  color: var(--mo-primary);
-  border-bottom-color: var(--mo-primary);
-  background: var(--mo-primary-light);
-}
-
-/* Stats and Overview Grid */
+/* Stats Overview Cards */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
 }
 
 .stat-card {
-  background: var(--mo-card-bg);
+  background: #FFFFFF;
   border: 1px solid var(--mo-border);
   border-radius: var(--mo-radius);
   padding: 1.25rem;
   box-shadow: var(--mo-shadow-sm);
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.15rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--mo-shadow-md);
 }
 
 .stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   background: var(--mo-primary-light);
   color: var(--mo-primary);
+  flex-shrink: 0;
 }
 
 .stat-details h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.75rem;
+  font-weight: 800;
   margin: 0;
   color: var(--mo-text-main);
 }
@@ -171,16 +438,17 @@
 .stat-details span {
   font-size: 0.875rem;
   color: var(--mo-text-muted);
+  font-weight: 500;
 }
 
-/* Content Cards & Tables */
+/* Content Boxes (Moodle Cards) */
 .card-box {
-  background: var(--mo-card-bg);
+  background: #FFFFFF;
   border: 1px solid var(--mo-border);
   border-radius: var(--mo-radius);
-  padding: 1.5rem;
+  padding: 1.75rem;
   box-shadow: var(--mo-shadow-sm);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .card-header-flex {
@@ -193,25 +461,31 @@
 }
 
 .card-header-flex h2 {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 700;
   margin: 0;
+  color: var(--mo-text-main);
 }
 
-/* Badges */
+/* Standardized Status Badges */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.65rem;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
   border-radius: 9999px;
-  font-size: 0.775rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   line-height: 1;
 }
 
+.badge-agendado { background: var(--mo-info-bg); color: var(--mo-info); }
+.badge-confirmado { background: var(--mo-success-bg); color: var(--mo-success); }
+.badge-pendente { background: var(--mo-warning-bg); color: var(--mo-warning); }
+.badge-concluido { background: #E0E7FF; color: #4338CA; }
+.badge-recusado, .badge-danger { background: var(--mo-danger-bg); color: var(--mo-danger); }
 .badge-success { background: var(--mo-success-bg); color: var(--mo-success); }
 .badge-warning { background: var(--mo-warning-bg); color: var(--mo-warning); }
-.badge-danger { background: var(--mo-danger-bg); color: var(--mo-danger); }
 .badge-neutral { background: var(--mo-bg); color: var(--mo-text-muted); border: 1px solid var(--mo-border); }
 
 /* Buttons */
@@ -221,10 +495,10 @@
   justify-content: center;
   gap: 0.5rem;
   min-height: 48px;
-  padding: 0.5rem 1.25rem;
+  padding: 0.6rem 1.4rem;
   font-size: 0.95rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: var(--mo-radius-sm);
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.2s ease-out;
@@ -233,17 +507,17 @@
 
 .btn-mo-primary {
   background: var(--mo-primary);
-  color: #FFF;
+  color: #FFFFFF;
 }
 
 .btn-mo-primary:hover {
   background: var(--mo-primary-hover);
-  color: #FFF;
+  color: #FFFFFF;
   text-decoration: none;
 }
 
 .btn-mo-secondary {
-  background: #FFF;
+  background: #FFFFFF;
   border-color: var(--mo-border);
   color: var(--mo-text-main);
 }
@@ -252,6 +526,16 @@
   background: var(--mo-bg);
   border-color: var(--mo-border-hover);
   text-decoration: none;
+}
+
+.btn-mo-success {
+  background: var(--mo-success);
+  color: #FFFFFF;
+}
+
+.btn-mo-danger {
+  background: var(--mo-danger);
+  color: #FFFFFF;
 }
 
 /* Tables */
@@ -269,14 +553,17 @@
 
 .table-mo th {
   background: var(--mo-bg);
-  padding: 0.875rem 1rem;
-  font-weight: 600;
+  padding: 1rem;
+  font-weight: 700;
   color: var(--mo-text-muted);
   border-bottom: 2px solid var(--mo-border);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .table-mo td {
-  padding: 1rem;
+  padding: 1.15rem 1rem;
   border-bottom: 1px solid var(--mo-border);
   vertical-align: middle;
 }
@@ -293,7 +580,7 @@
 .form-group label {
   display: block;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.45rem;
   font-size: 0.925rem;
   color: var(--mo-text-main);
 }
@@ -301,12 +588,13 @@
 .form-control-mo {
   width: 100%;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--mo-radius-sm);
   border: 1px solid var(--mo-border);
   font-size: 0.95rem;
-  background: #FFF;
+  background: #FFFFFF;
   min-height: 48px;
   box-sizing: border-box;
+  color: var(--mo-text-main);
 }
 
 .form-control-mo:focus {
@@ -315,12 +603,105 @@
   box-shadow: 0 0 0 3px rgba(16, 102, 79, 0.15);
 }
 
-/* Footer Signature */
-.monitoria-footer-signature {
-  margin-top: 2.5rem;
-  padding-top: 1.25rem;
+/* Course Cards Grid */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.moodle-course-card {
+  background: #FFFFFF;
+  border: 1px solid var(--mo-border);
+  border-radius: var(--mo-radius);
+  overflow: hidden;
+  box-shadow: var(--mo-shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.moodle-course-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--mo-shadow-md);
+}
+
+.course-card-banner {
+  height: 90px;
+  background: linear-gradient(135deg, var(--mo-primary) 0%, #0D9488 100%);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  color: #FFFFFF;
+}
+
+.course-code-badge {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.course-card-body {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-card-body h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: var(--mo-text-main);
+}
+
+.course-meta {
+  color: var(--mo-text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.course-card-actions {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--mo-border);
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Footer */
+.moodle-footer-signature {
+  margin-top: 3.5rem;
+  padding-top: 2rem;
   border-top: 1px solid var(--mo-border);
   text-align: center;
-  font-size: 0.85rem;
   color: var(--mo-text-muted);
+  font-size: 0.875rem;
+}
+
+.moodle-footer-signature .inst-text {
+  font-weight: 700;
+  color: var(--mo-text-main);
+  margin: 0 0 0.25rem 0;
+}
+
+.moodle-footer-signature .academic-text {
+  margin: 0 0 0.25rem 0;
+}
+
+.moodle-footer-signature .credits-text {
+  margin: 0 0 0.4rem 0;
+  font-weight: 500;
+}
+
+.moodle-footer-signature .sig-text {
+  color: var(--mo-primary);
+  font-weight: 600;
+  margin: 0;
 }

@@ -1,86 +1,175 @@
-﻿# 🎓 Projeto de Extensão: Monitoria Online — IFSP
+# 🎓 Monitoria Online (Moodle-Base)
 
-> **Módulo Oficial de Gerenciamento, Agendamento e Atendimento de Monitorias Acadêmicas**  
-> **Instituto Federal de Educação, Ciência e Tecnologia de São Paulo (IFSP)**  
-> **Base de Desenvolvimento:** Moodle 4.5+ (Plugin nativo em `local/monitoria`)  
+> **Plataforma Acadêmica de Gerenciamento, Agendamento e Atendimento de Monitorias no Moodle LMS**  
+> **Instituto Federal de Educação, Ciência e Tecnologia de São Paulo (IFSP) — Câmpus São Paulo**  
+> **Disciplina:** Desenvolvimento Web & Projeto de Software  
 > **Equipe (GEN Corp):** Gabriel Rodrigues da Rocha Forti, Eduardo Gritti Medeiros Teixeira, Nicolas de Azevedo Andrade Santana  
-> **Orientador:** Prof. Caio  
+> **Docente / Orientador:** Prof. Caio  
 
 ---
 
-## 🌐 Deploy em Produção (Vercel)
+## 🌐 Links Oficiais do Projeto & Acesso em Produção
 
-* 🚀 **Ambiente no Ar:** [**https://monitoria-online.vercel.app**](https://monitoria-online.vercel.app)
-* ⚙️ **Painel Administrativo:** [**https://monitoria-online.vercel.app/admin/**](https://monitoria-online.vercel.app/admin/)
-* 📦 **Repositório da Aplicação Web:** [GEN-Corp/Monitoria-Online](https://github.com/GEN-Corp/Monitoria-Online)
-* 🧩 **Plugin Moodle Implementado:** [`local/monitoria/`](local/monitoria/)
+| Recurso | Destino / URL | Descrição |
+| :--- | :--- | :--- |
+| 🚀 **Deploy em Produção (Render)** | [**https://moodle-base.onrender.com**](https://moodle-base.onrender.com) | Ambiente em nuvem conteinerizado com Docker & PostgreSQL |
+| 🌐 **Deploy Web Alternativo (Vercel)** | [**https://monitoria-online.vercel.app**](https://monitoria-online.vercel.app) | Aplicação web para demonstração rápida e responsiva |
+| 📦 **Repositório GitHub (Moodle-Base)** | [**https://github.com/GEN-Corp/Moodle-Base**](https://github.com/GEN-Corp/Moodle-Base) | Core Moodle com plugin nativo `local/monitoria` |
+| 📊 **Quadro Ágil no Jira (Scrum)** | [**gabrielforti11.atlassian.net (SCRUM)**](https://gabrielforti11.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog) | Sprint 1 com 31 Story Points (100% Concluída) |
 
----
-
-## 🎯 Objetivo & Impacto Social: Superando Barreiras de Locomoção no IFSP
-
-No Instituto Federal de São Paulo (IFSP), as atividades de monitoria são fundamentais para o aprendizado e retenção discente.
-
-Entretanto, **um desafio crucial mapeado nas pesquisas é a barreira de transporte e locomoção:**
-* Muitos estudantes residem em bairros distantes ou municípios vizinhos e dependem de transporte público intermunicipal com horários rígidos.
-* Por essa razão, **os estudantes não conseguem comparecer ao contra-turno escolar** para participar das monitorias presenciais tradicionais.
-* O sistema **Monitoria Online** soluciona essa dor ao centralizar:
-  1. **Agendamento de sessões remotas via Google Meet** ou presenciais em laboratórios.
-  2. **Central de dúvidas e tickets assíncronos**, permitindo que o aluno tire dúvidas mesmo sem estar presente fisicamente no câmpus.
-  3. **Painéis de controle especializados** para Alunos, Monitores, Professores e Coordenação.
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/GEN-Corp/Moodle-Base)
 
 ---
 
-## 🔑 Credenciais de Acesso para Testes e Avaliação
+## 🎯 Objetivo Acadêmico & Impacto Social (IFSP)
 
-| Perfil de Acesso | Usuário (`username`) | E-mail Institucional | Senha de Acesso | URL de Acesso | Papel e Permissões |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| 🛡️ **Superusuário / Administrador** | `admin` | `admin@ifsp.edu.br` | `Admin@IFSP2026` | [`/admin/`](https://monitoria-online.vercel.app/admin/) ou [`/login/`](https://monitoria-online.vercel.app/login/) | Gestão de dados, modelos e logs globais. |
-| 🏫 **Coordenador Acadêmico** | `coordenador` | `coordenacao@ifsp.edu.br` | `Coord@IFSP2026` | [`/login/`](https://monitoria-online.vercel.app/login/) | Indicadores gerais e homologação de turmas. |
-| 👨‍🏫 **Professor Responsável** | `prof_caio` | `caio.docente@ifsp.edu.br` | `Prof@IFSP2026` | [`/login/`](https://monitoria-online.vercel.app/login/) | Acompanhamento das turmas de sua docência. |
-| 👨‍💻 **Monitor Oficial** | `monitor_gritti` | `eduardo.gritti@aluno.ifsp.edu.br` | `Monitor@IFSP2026` | [`/login/`](https://monitoria-online.vercel.app/login/) | Atendimento de alunos, fila de dúvidas e grade. |
-| 🎓 **Estudante / Aluno** | `aluno_nicolas` | `nicolas.andrade@aluno.ifsp.edu.br` | `Aluno@IFSP2026` | [`/login/`](https://monitoria-online.vercel.app/login/) | Envio de dúvidas, agendamentos e histórico. |
+No Instituto Federal de São Paulo (IFSP), o programa de monitoria é indispensável para combater a retenção e nivelar conhecimentos em matérias exatas e de tecnologia.
+
+Entretanto, **um desafio crítico enfrentado pela comunidade acadêmica é a barreira de locomoção e transporte:**
+* Diversos estudantes moram em regiões periféricas ou cidades vizinhas e dependem de transporte público intermunicipal com horários restritos.
+* Por conta dessa limitação logística, **os estudantes ficam impossibilitados de comparecer fisicamente ao contra-turno escolar** para participar das monitorias presenciais.
+* O sistema **Monitoria Online** integrado ao Moodle elimina essa barreira ao proporcionar:
+  1. **Agendamento de sessões síncronas via Google Meet** ou presenciais em laboratórios de informática.
+  2. **Central de dúvidas e fórum assíncrono**, garantindo suporte contínuo mesmo que o aluno não esteja no câmpus.
+  3. **Painel do monitor** para homologação, controle de presenças e anotações pedagógicas.
+  4. **Painel da coordenação** para métricas de atendimento e acompanhamento de turmas.
 
 ---
 
-## 📊 Engenharia de Software Ágil & Rastreabilidade Jira (Sprint 1)
+## 👥 Credenciais de Acesso para Testes e Avaliação
 
-O projeto é gerenciado via metodologia ágil **Scrum** no Jira Oficial ([gabrielforti11.atlassian.net](https://gabrielforti11.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog)).
+O sistema conta com seletor instantâneo de papéis no cabeçalho e usuários pré-configurados:
+
+| Papel Acadêmico | Usuário (`username`) | E-mail Institucional | Senha de Acesso | Permissões no Sistema |
+| :--- | :--- | :--- | :--- | :--- |
+| 🛡️ **Administrador / Superuser** | `admin` | `admin@ifsp.edu.br` | `Admin@IFSP2026` | Acesso total ao Moodle, banco de dados e logs |
+| 🏫 **Coordenador Acadêmico** | `coordenador` | `coordenacao@ifsp.edu.br` | `Coord@IFSP2026` | Gestão de disciplinas, turmas e homologação de monitores |
+| 👨‍🏫 **Professor Responsável** | `prof_caio` | `caio.docente@ifsp.edu.br` | `Prof@IFSP2026` | Supervisão pedagógica, relatórios e respostas no fórum |
+| 👨‍💻 **Monitor Oficial** | `monitor_gritti` | `eduardo.gritti@aluno.ifsp.edu.br` | `Monitor@IFSP2026` | Publicação de horários, aprovação de sessões e presença |
+| 🎓 **Estudante / Aluno** | `aluno_nicolas` | `nicolas.andrade@aluno.ifsp.edu.br` | `Aluno@IFSP2026` | Consulta de vagas, agendamento de sessões e envio de dúvidas |
+
+---
+
+## 🚀 Funcionalidades Implementadas
+
+### 🎓 Visão do Aluno
+* **Catálogo de Disciplinas:** Visualização de matérias ofertadas (`Desenvolvimento Web`, `Engenharia de Software`, `Banco de Dados`), carga horária e monitores responsáveis.
+* **Agendamento de Horários:** Consulta de vagas disponíveis por dia da semana e agendamento instantâneo com descrição do tema da dúvida.
+* **Fórum / Central de Dúvidas:** Publicação de dúvidas assíncronas com categorização por matéria e histórico de respostas do monitor.
+* **Link Direto do Google Meet:** Acesso imediato à sala virtual de videoconferência.
+
+### 👨‍💻 Visão do Monitor e Professor
+* **Publicação de Horários:** Definição de grade de disponibilidade (dia, horário de início/fim, modalidade híbrida/online e capacidade máxima de alunos).
+* **Gestão e Aprovação de Atendimentos:** Painel para aceitar ou recusar solicitações de agendamento.
+* **Registro de Presença & Notas:** Homologação de presença discente e anotações pedagógicas pós-atendimento.
+* **Moderação do Fórum:** Resposta a perguntas enviadas pelos alunos com destaque de orientação acadêmica.
+
+### 🏫 Visão da Coordenação
+* **Gestão de Disciplinas & Monitores:** Cadastro de novos códigos curriculares e vinculação formal de monitores com carga horária semanal.
+* **Indicadores em Tempo Real:** Total de matérias ativas, vagas abertas, atendimentos realizados e dúvidas pendentes.
+
+---
+
+## 🛠️ Tecnologias e Arquitetura do Software
+
+* **LMS Base:** Moodle 4.5+ (LMS oficial em PHP 8.2).
+* **Padrão Visual:** Tema Boost refinado (Moodle 4.x), com Navbar superior, Drawer lateral retrátil, breadcrumbs e componentes acessíveis com touch targets $\ge 48\text{px}$.
+* **Arquitetura do Plugin (`local/monitoria`):**
+  - Esquema Relacional XMLDB (`db/install.xml`): 6 tabelas relacionais com chaves primárias e estrangeiras.
+  - Controle de Acesso e Permissões (`db/access.php`): Capabilities granulares para Aluno, Monitor, Professor e Coordenador.
+  - Navegação Institucional (`lib.php`): Hook `local_monitoria_extend_navigation` inserindo o módulo no menu principal.
+  - Camada de Persistência Híbrida (`classes/database_helper.php`): Interação com o `$DB` nativo do Moodle e fallback dinâmico.
+  - Camada de Negócio (`classes/monitoria_manager.php`): Regras de agendamento, capacidade de vagas, moderação e métricas.
+* **Conteinerização & Nuvem:** `Dockerfile` com Apache, extensões PHP oficiais (`intl`, `gd`, `zip`, `soap`, `opcache`, `pgsql`, `mysqli`) e blueprint `render.yaml` com banco de dados PostgreSQL gerenciado.
+
+---
+
+## 📂 Estrutura de Pastas
+
+```text
+Moodle-Base/
+├── Dockerfile                      # Imagem conteinerizada PHP 8.2 Apache para o Render
+├── render.yaml                     # Blueprint IaC (Web Service + Banco PostgreSQL)
+├── docker/
+│   ├── apache.conf                 # Configuração do VirtualHost Apache
+│   ├── config.php                  # Configuração dinâmica de banco e SSL proxy
+│   └── entrypoint.sh               # Inicialização, checagem de banco e migração
+├── local/
+│   └── monitoria/                  # 🧩 Plugin Oficial da Monitoria Online
+│       ├── version.php             # Metadados e versão do plugin
+│       ├── lib.php                 # Hooks de navegação e menu do Moodle
+│       ├── styles.css              # Estilos no padrão Moodle 4.x Boost
+│       ├── index.php               # Painel Geral e Métricas
+│       ├── agendamento.php         # Agendamento de Horários e Vagas
+│       ├── atendimentos.php        # Gestão de Atendimentos e Presenças
+│       ├── duvidas.php             # Fórum e Central de Dúvidas
+│       ├── admin_gestao.php        # Gestão de Disciplinas e Monitores
+│       ├── api.php                 # Endpoints REST para consumo externo
+│       ├── classes/
+│       │   ├── controller.php      # Renderização de Navbar, Drawer e Breadcrumbs
+│       │   ├── database_helper.php # Camada de persistência segura
+│       │   └── monitoria_manager.php # Regras de negócio da monitoria
+│       ├── db/
+│       │   ├── access.php          # Capabilities e permissões Moodle
+│       │   └── install.xml         # Definição das tabelas relacionais XMLDB
+│       └── lang/
+│           ├── pt_br/              # Internacionalização em Português do Brasil
+│           └── en/                 # Internacionalização em Inglês
+└── README.md                       # Documentação técnica e acadêmica do projeto
+```
+
+---
+
+## 💻 Como Rodar o Projeto Localmente
+
+### Opção 1: Via Docker (Recomendado)
+```bash
+# 1. Clonar o repositório
+git clone https://github.com/GEN-Corp/Moodle-Base.git
+cd Moodle-Base
+
+# 2. Construir a imagem Docker
+docker build -t moodle-monitoria .
+
+# 3. Executar o container na porta 8080
+docker run -d -p 8080:80 --name moodle-local moodle-monitoria
+
+# 4. Acessar no navegador
+http://localhost:8080/local/monitoria/
+```
+
+### Opção 2: Via XAMPP / Laragon (PHP 8.1 ou 8.2 + Apache)
+```bash
+# 1. Clonar na pasta raiz do servidor web (ex: htdocs ou www)
+git clone https://github.com/GEN-Corp/Moodle-Base.git C:/laragon/www/moodle
+
+# 2. Criar uma pasta moodledata externa com permissão de escrita
+mkdir C:/laragon/moodledata
+
+# 3. Iniciar Apache e MySQL no Laragon/XAMPP
+# 4. Acessar a aplicação no navegador
+http://localhost/moodle/local/monitoria/
+```
+
+---
+
+## 📊 Metodologia Ágil no Jira (Scrum)
+
+O desenvolvimento segue boas práticas ágeis documentadas no [Jira Oficial](https://gabrielforti11.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog):
 
 ### Épicos Estruturados
-* **`SCRUM-56` (Épico 1):** *Autenticação, Perfis e Acessos Acadêmicos*
+* **`SCRUM-56` (Épico 1):** *Autenticação, Perfis e Acesso Institucional*
 * **`SCRUM-57` (Épico 2):** *Gestão de Disciplinas e Monitores*
 * **`SCRUM-58` (Épico 3):** *Agendamento e Salas de Monitoria*
 * **`SCRUM-59` (Épico 4):** *Atendimento de Dúvidas e Fórum Acadêmico*
 * **`SCRUM-60` (Épico 5):** *Painéis de Controle e Dashboards*
 
-### Rastreabilidade das Histórias de Usuário (31 Story Points — 100% Concluído)
-* `SCRUM-61` (US01): Autenticação e Perfis (5 SP)
-* `SCRUM-65` (US02): Gestão de Disciplinas e Monitores (8 SP)
-* `SCRUM-69` (US03): Agendamento e Salas de Monitoria (8 SP)
-* `SCRUM-73` (US04): Painéis Dedicados para Aluno e Monitor (5 SP)
-* `SCRUM-77` (US05): Central de Dúvidas e Fórum Rápido de Suporte (5 SP)
-
----
-
-
----
-
-## ☁️ Deploy do Moodle-Base no Render (Infraestrutura como Código)
-
-O repositório contém a infraestrutura completa de conteinerização Docker e Blueprint pronta para nuvem no **Render**:
-
-* 📄 **`Dockerfile`**: Imagem PHP 8.2 Apache com todas as extensões do Moodle (`intl`, `gd`, `zip`, `soap`, `opcache`, `pgsql`, `mysqli`, `exif`, `bcmath`).
-* 📄 **`render.yaml`**: Declaração IaC do Web Service e do banco de dados relacional PostgreSQL (`moodle-db`).
-* 📄 **`docker/entrypoint.sh`**: Script de inicialização automática que configura portas dinâmicas, valida conexão com o banco e executa instalação/migração do plugin `local/monitoria`.
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/GEN-Corp/Moodle-Base)
-
-### Como ativar o deploy no Render em 1 clique:
-1. Acesse o painel do [Render Dashboard](https://dashboard.render.com).
-2. Clique em **New +** > **Blueprint**.
-3. Selecione o repositório GEN-Corp/Moodle-Base (branch main ou sprint-1-monitoria-online).
-4. O Render detectará automaticamente o arquivo `render.yaml`, provisionará o banco PostgreSQL e subirá o container do Moodle com o plugin `local/monitoria` integrado.
+### Rastreabilidade das Histórias de Usuário da Sprint 1 (31 Story Points — 100% Concluído)
+* **`SCRUM-61` (US01) [8 SP]:** *Autenticação e Perfis de Acesso* — Subtarefas: `SCRUM-62` (Front), `SCRUM-63` (Back), `SCRUM-64` (DB).
+* **`SCRUM-65` (US02) [5 SP]:** *Consulta de Disciplinas e Monitores* — Subtarefas: `SCRUM-66` (Front), `SCRUM-67` (Back), `SCRUM-68` (DB).
+* **`SCRUM-69` (US03) [8 SP]:** *Agendamento de Horários pelo Aluno* — Subtarefas: `SCRUM-70` (Front), `SCRUM-71` (Back), `SCRUM-72` (DB).
+* **`SCRUM-73` (US04) [5 SP]:** *Painel do Monitor para Aprovação de Atendimentos* — Subtarefas: `SCRUM-74` (Front), `SCRUM-75` (Back), `SCRUM-76` (DB).
+* **`SCRUM-77` (US05) [5 SP]:** *Central de Dúvidas e Fórum Integrado* — Subtarefas: `SCRUM-78` (Front), `SCRUM-79` (Back), `SCRUM-80` (DB).
 
 ---
 

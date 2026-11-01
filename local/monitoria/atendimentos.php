@@ -15,13 +15,17 @@
  */
 
 if (file_exists(__DIR__ . '/../../config.php')) {
-    require_once(__DIR__ . '/../../config.php');
-    if (!empty($PAGE)) {
-        $PAGE->set_url(new moodle_url('/local/monitoria/atendimentos.php'));
-        $PAGE->set_context(\context_system::instance());
-        $PAGE->set_pagelayout('standard');
-        $PAGE->set_title('Gestão de Atendimentos — Monitoria Online');
-        $PAGE->set_heading('Atendimentos do Monitor');
+    try {
+        require_once(__DIR__ . '/../../config.php');
+        if (!empty($PAGE)) {
+            $PAGE->set_url(new moodle_url('/local/monitoria/atendimentos.php'));
+            $PAGE->set_context(\context_system::instance());
+            $PAGE->set_pagelayout('standard');
+            $PAGE->set_title('Gestão de Atendimentos — Monitoria Online');
+            $PAGE->set_heading('Atendimentos do Monitor');
+        }
+    } catch (\Throwable $e) {
+        if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
     }
 } else {
     if (!defined('MOODLE_INTERNAL')) define('MOODLE_INTERNAL', true);
@@ -69,7 +73,7 @@ $pendentes = count(array_filter($all_bookings, fn($b) => in_array($b['status'] ?
 $confirmados = count(array_filter($all_bookings, fn($b) => ($b['status'] ?? '') === 'confirmado'));
 $concluidos = count(array_filter($all_bookings, fn($b) => ($b['status'] ?? '') === 'concluido'));
 
-controller::render_header('atendimentos');
+controller::render_header('atendimentos', 'Gestão de Atendimentos do Monitor');
 ?>
 
 <?php if ($feedback_msg): ?>
@@ -114,7 +118,7 @@ controller::render_header('atendimentos');
 <div class="card-box">
   <div class="card-header-flex">
     <h2>📋 Painel de Gestão e Aprovação de Atendimentos</h2>
-    <span class="badge badge-success"><?php echo count($all_bookings); ?> Solicitações Registradas</span>
+    <span class="badge badge-confirmado"><?php echo count($all_bookings); ?> Solicitações Registradas</span>
   </div>
   <p style="color:var(--mo-text-muted); font-size:0.95rem;">
     Acompanhe as solicitações de alunos, aprove horários, entre na sala virtual do Google Meet e registre a assiduidade discente.
@@ -138,10 +142,10 @@ controller::render_header('atendimentos');
             <?php
               $st = $b['status'] ?? 'agendado';
               $badgeClass = match($st) {
-                'confirmado' => 'badge-success',
-                'concluido' => 'badge-neutral',
-                'recusado', 'cancelado' => 'badge-danger',
-                default => 'badge-warning'
+                'confirmado' => 'badge-confirmado',
+                'concluido' => 'badge-concluido',
+                'recusado', 'cancelado' => 'badge-recusado',
+                default => 'badge-pendente'
               };
             ?>
             <tr>
@@ -162,7 +166,7 @@ controller::render_header('atendimentos');
               </td>
               <td>
                 <?php if ($st === 'concluido'): ?>
-                  <?php echo (!empty($b['attended'])) ? '<span class="badge badge-success">Presente</span>' : '<span class="badge badge-danger">Ausente</span>'; ?>
+                  <?php echo (!empty($b['attended'])) ? '<span class="badge badge-confirmado">Presente</span>' : '<span class="badge badge-recusado">Ausente</span>'; ?>
                 <?php else: ?>
                   <span style="color:var(--mo-text-subtle);">Pendente</span>
                 <?php endif; ?>
@@ -174,14 +178,14 @@ controller::render_header('atendimentos');
                     <form method="POST" action="" style="display:inline;">
                       <input type="hidden" name="action" value="aprovar_agendamento">
                       <input type="hidden" name="booking_id" value="<?php echo $b['id']; ?>">
-                      <button type="submit" class="btn-mo btn-mo-primary" style="min-height:34px; padding:0.25rem 0.65rem; font-size:0.825rem;">
+                      <button type="submit" class="btn-mo btn-mo-primary" style="min-height:36px; padding:0.25rem 0.75rem; font-size:0.85rem;">
                         ✓ Aprovar
                       </button>
                     </form>
                     <form method="POST" action="" style="display:inline;">
                       <input type="hidden" name="action" value="recusar_agendamento">
                       <input type="hidden" name="booking_id" value="<?php echo $b['id']; ?>">
-                      <button type="submit" class="btn-mo btn-mo-secondary" style="min-height:34px; padding:0.25rem 0.65rem; font-size:0.825rem; color:#DC2626;">
+                      <button type="submit" class="btn-mo btn-mo-secondary" style="min-height:36px; padding:0.25rem 0.75rem; font-size:0.85rem; color:#DC2626;">
                         ✕ Recusar
                       </button>
                     </form>
@@ -189,18 +193,18 @@ controller::render_header('atendimentos');
 
                 <?php elseif ($st === 'confirmado'): ?>
                   <!-- CONCLUIR E MARCAR PRESENÇA -->
-                  <form method="POST" action="" style="background:var(--mo-bg); padding:0.5rem; border-radius:6px; border:1px solid var(--mo-border);">
+                  <form method="POST" action="" style="background:var(--mo-bg); padding:0.65rem; border-radius:8px; border:1px solid var(--mo-border);">
                     <input type="hidden" name="action" value="concluir_atendimento">
                     <input type="hidden" name="booking_id" value="<?php echo $b['id']; ?>">
-                    <div style="margin-bottom:0.35rem;">
-                      <label style="font-size:0.8rem; font-weight:600; cursor:pointer;">
-                        <input type="checkbox" name="attended" value="1" checked> Aluno compareceu
+                    <div style="margin-bottom:0.4rem;">
+                      <label style="font-size:0.825rem; font-weight:600; cursor:pointer;">
+                        <input type="checkbox" name="attended" value="1" checked> Aluno compareceu à monitoria
                       </label>
                     </div>
-                    <div style="margin-bottom:0.35rem;">
-                      <input type="text" name="notes" placeholder="Notas sobre o atendimento..." class="form-control-mo" style="min-height:32px; font-size:0.8rem; padding:0.25rem 0.5rem;">
+                    <div style="margin-bottom:0.4rem;">
+                      <input type="text" name="notes" placeholder="Resumo dos tópicos sanados..." class="form-control-mo" style="min-height:36px; font-size:0.85rem; padding:0.25rem 0.5rem;">
                     </div>
-                    <button type="submit" class="btn-mo btn-mo-primary" style="min-height:32px; padding:0.2rem 0.6rem; font-size:0.8rem; width:100%;">
+                    <button type="submit" class="btn-mo btn-mo-primary" style="min-height:36px; padding:0.3rem 0.75rem; font-size:0.85rem; width:100%;">
                       Finalizar Atendimento
                     </button>
                   </form>

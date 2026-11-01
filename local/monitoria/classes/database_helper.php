@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -96,6 +96,28 @@ class database_helper {
         $records[] = $data;
         self::write_table($table, $records);
         return $data['id'];
+    }
+
+    public static function delete_records(string $table, array $conditions): bool {
+        global $DB;
+        if (!empty($DB) && is_object($DB) && method_exists($DB, 'delete_records')) {
+            try {
+                return $DB->delete_records($table, $conditions);
+            } catch (\Exception $e) {
+                // Fallback
+            }
+        }
+
+        $records = self::read_table($table);
+        $filtered = array_values(array_filter($records, function($item) use ($conditions) {
+            foreach ($conditions as $k => $v) {
+                if (isset($item[$k]) && (string)$item[$k] === (string)$v) {
+                    return false;
+                }
+            }
+            return true;
+        }));
+        return self::write_table($table, $filtered);
     }
 
     public static function update_record(string $table, array $data): bool {
