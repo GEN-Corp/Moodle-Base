@@ -74,6 +74,8 @@ O repositório contém a infraestrutura completa de conteinerização Docker e B
 * 📄 **`render.yaml`**: Declaração IaC do Web Service e do banco de dados relacional PostgreSQL (`moodle-db`).
 * 📄 **`docker/entrypoint.sh`**: Script de inicialização automática que configura portas dinâmicas, valida conexão com o banco e executa instalação/migração do plugin `local/monitoria`.
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/GEN-Corp/Moodle-Base)
+
 ### Como ativar o deploy no Render em 1 clique:
 1. Acesse o painel do [Render Dashboard](https://dashboard.render.com).
 2. Clique em **New +** > **Blueprint**.
