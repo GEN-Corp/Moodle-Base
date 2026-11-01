@@ -28,6 +28,12 @@ class database_helper {
             if (!is_dir($dir)) {
                 @mkdir($dir, 0777, true);
             }
+            if (!is_dir($dir) || !is_writable($dir)) {
+                $dir = sys_get_temp_dir() . '/monitoria_data';
+                if (!is_dir($dir)) {
+                    @mkdir($dir, 0777, true);
+                }
+            }
             self::$storage_path = $dir;
         }
         return self::$storage_path;
@@ -36,23 +42,37 @@ class database_helper {
     private static function read_table(string $table): array {
         $file = self::get_storage_path() . '/' . $table . '.json';
         if (!file_exists($file)) {
-            return self::get_seed_data($table);
+            $seeds = self::get_seed_data($table);
+            if (!empty($seeds)) {
+                self::write_table($table, $seeds);
+            }
+            return $seeds;
         }
-        $content = file_get_contents($file);
-        $data = json_decode($content, true);
+        $content = @file_get_contents($file);
+        $data = !empty($content) ? json_decode($content, true) : null;
+        if (empty($data)) {
+            $seeds = self::get_seed_data($table);
+            if (!empty($seeds)) {
+                self::write_table($table, $seeds);
+            }
+            return $seeds;
+        }
         return is_array($data) ? $data : [];
     }
 
     private static function write_table(string $table, array $data): bool {
         $file = self::get_storage_path() . '/' . $table . '.json';
-        return (bool)file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        return (bool)@file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }
 
     public static function get_records(string $table, array $conditions = []): array {
         global $DB;
         if (!empty($DB) && is_object($DB) && method_exists($DB, 'get_records')) {
             try {
-                return (array)$DB->get_records($table, $conditions);
+                $db_records = (array)$DB->get_records($table, $conditions);
+                if (!empty($db_records)) {
+                    return $db_records;
+                }
             } catch (\Exception $e) {
                 // Fallback to local storage if table doesn't exist yet in Moodle DB
             }
@@ -190,7 +210,7 @@ class database_helper {
                     'course_name' => 'Desenvolvimento Web',
                     'weekly_hours' => 12,
                     'meet_link' => 'https://meet.google.com/abc-defg-hij',
-                    'location' => 'Laboratório 3 / Online',
+                    'location' => 'Laboratório 3 / Online via Meet',
                     'status' => 'ativo',
                     'timecreated' => time()
                 ],
@@ -203,7 +223,7 @@ class database_helper {
                     'course_name' => 'Engenharia de Software (Projeto de Software)',
                     'weekly_hours' => 12,
                     'meet_link' => 'https://meet.google.com/xyz-uvwx-rst',
-                    'location' => 'Sala de Projetos / Meet',
+                    'location' => 'Sala de Projetos / Google Meet',
                     'status' => 'ativo',
                     'timecreated' => time()
                 ]
