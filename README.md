@@ -1,48 +1,66 @@
-# Moodle
+# 🎓 Projeto de Extensão: Monitoria Online — IFSP
 
-<p align="center"><a href="https://moodle.org" target="_blank" title="Moodle Website">
-  <img src="https://raw.githubusercontent.com/moodle/moodle/main/.github/moodlelogo.svg" alt="The Moodle Logo">
-</a></p>
+> **Módulo Oficial de Gerenciamento, Agendamento e Atendimento de Monitorias Acadêmicas**  
+> **Instituto Federal de Educação, Ciência e Tecnologia de São Paulo (IFSP)**  
+> **Base de Desenvolvimento:** Moodle 4.5+ (Plugin nativo em `local/monitoria`)  
+> **Equipe (GEN Corp):** Gabriel Rodrigues da Rocha Forti, Eduardo Gritti Medeiros Teixeira, Nicolas de Azevedo Andrade Santana  
+> **Orientador:** Prof. Caio  
 
-[Moodle][1] is the World's Open Source Learning Platform, widely used around the world by countless universities, schools, companies, and all manner of organisations and individuals.
+---
 
-Moodle is designed to allow educators, administrators and learners to create personalised learning environments with a single robust, secure and integrated system.
+## 🌐 Deploy em Produção (Vercel)
 
-## Documentation
+* 🚀 **Ambiente no Ar:** [**https://monitoria-online.vercel.app**](https://monitoria-online.vercel.app)
+* ⚙️ **Painel Administrativo:** [**https://monitoria-online.vercel.app/admin/**](https://monitoria-online.vercel.app/admin/)
+* 📦 **Repositório da Aplicação Web:** [GEN-Corp/Monitoria-Online](https://github.com/GEN-Corp/Monitoria-Online)
+* 🧩 **Plugin Moodle Implementado:** [`local/monitoria/`](local/monitoria/)
 
-- Read our [User documentation][3]
-- Discover our [developer documentation][5]
-- Take a look at our [demo site][4]
+---
 
-## Community
+## 🎯 Objetivo & Impacto Social: Superando Barreiras de Locomoção no IFSP
 
-[moodle.org][1] is the central hub for the Moodle Community, with spaces for educators, administrators and developers to meet and work together.
+No Instituto Federal de São Paulo (IFSP), as atividades de monitoria são fundamentais para o aprendizado e retenção discente.
 
-You may also be interested in:
+Entretanto, **um desafio crucial mapeado nas pesquisas é a barreira de transporte e locomoção:**
+* Muitos estudantes residem em bairros distantes ou municípios vizinhos e dependem de transporte público intermunicipal com horários rígidos.
+* Por essa razão, **os estudantes não conseguem comparecer ao contra-turno escolar** para participar das monitorias presenciais tradicionais.
+* O sistema **Monitoria Online** soluciona essa dor ao centralizar:
+  1. **Agendamento de sessões remotas via Google Meet** ou presenciais em laboratórios.
+  2. **Central de dúvidas e tickets assíncronos**, permitindo que o aluno tire dúvidas mesmo sem estar presente fisicamente no câmpus.
+  3. **Painéis de controle especializados** para Alunos, Monitores, Professores e Coordenação.
 
-- attending a [Moodle Moot][6]
-- our regular series of [developer meetings][7]
-- the [Moodle User Association][8]
+---
 
-## Installation and hosting
+## 🔑 Credenciais de Acesso para Testes e Avaliação
 
-Moodle is Free, and Open Source software. You can easily [download Moodle][9] and run it on your own web server, however you may prefer to work with one of our experienced [Moodle Partners][10].
+| Perfil de Acesso | Usuário (`username`) | E-mail Institucional | Senha de Acesso | URL de Acesso | Papel e Permissões |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 🛡️ **Superusuário / Administrador** | `admin` | `admin@ifsp.edu.br` | `Admin@IFSP2026` | [`/admin/`](https://monitoria-online.vercel.app/admin/) ou [`/login/`](https://monitoria-online.vercel.app/login/) | Gestão de dados, modelos e logs globais. |
+| 🏫 **Coordenador Acadêmico** | `coordenador` | `coordenacao@ifsp.edu.br` | `Coord@IFSP2026` | [`/login/`](https://monitoria-online.vercel.app/login/) | Indicadores gerais e homologação de turmas. |
+| 👨‍🏫 **Professor Responsável** | `prof_caio` | `caio.docente@ifsp.edu.br` | `Prof@IFSP2026` | [`/login/`](https://monitoria-online.vercel.app/login/) | Acompanhamento das turmas de sua docência. |
+| 👨‍💻 **Monitor Oficial** | `monitor_gritti` | `eduardo.gritti@aluno.ifsp.edu.br` | `Monitor@IFSP2026` | [`/login/`](https://monitoria-online.vercel.app/login/) | Atendimento de alunos, fila de dúvidas e grade. |
+| 🎓 **Estudante / Aluno** | `aluno_nicolas` | `nicolas.andrade@aluno.ifsp.edu.br` | `Aluno@IFSP2026` | [`/login/`](https://monitoria-online.vercel.app/login/) | Envio de dúvidas, agendamentos e histórico. |
 
-Moodle also offers hosting through both [MoodleCloud][11], and our [partner network][10].
+---
 
-## License
+## 📊 Engenharia de Software Ágil & Rastreabilidade Jira (Sprint 1)
 
-Moodle is provided freely as open source software, under version 3 of the GNU General Public License. See our [license page][12] for more information.
+O projeto é gerenciado via metodologia ágil **Scrum** no Jira Oficial ([gabrielforti11.atlassian.net](https://gabrielforti11.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog)).
 
-[1]: https://moodle.org
-[2]: https://moodle.com
-[3]: https://docs.moodle.org/
-[4]: https://sandbox.moodledemo.net/
-[5]: https://moodledev.io
-[6]: https://moodle.com/events/mootglobal/
-[7]: https://moodledev.io/general/community/meetings
-[8]: https://moodleassociation.org/
-[9]: https://download.moodle.org
-[10]: https://moodle.com/partners
-[11]: https://moodle.com/cloud
-[12]: https://moodledev.io/general/license
+### Épicos Estruturados
+* **`SCRUM-56` (Épico 1):** *Autenticação, Perfis e Acessos Acadêmicos*
+* **`SCRUM-57` (Épico 2):** *Gestão de Disciplinas e Monitores*
+* **`SCRUM-58` (Épico 3):** *Agendamento e Salas de Monitoria*
+* **`SCRUM-59` (Épico 4):** *Atendimento de Dúvidas e Fórum Acadêmico*
+* **`SCRUM-60` (Épico 5):** *Painéis de Controle e Dashboards*
+
+### Rastreabilidade das Histórias de Usuário (31 Story Points — 100% Concluído)
+* `SCRUM-61` (US01): Autenticação e Perfis (5 SP)
+* `SCRUM-65` (US02): Gestão de Disciplinas e Monitores (8 SP)
+* `SCRUM-69` (US03): Agendamento e Salas de Monitoria (8 SP)
+* `SCRUM-73` (US04): Painéis Dedicados para Aluno e Monitor (5 SP)
+* `SCRUM-77` (US05): Central de Dúvidas e Fórum Rápido de Suporte (5 SP)
+
+---
+
+Desenvolvido com excelência por **NextCodeGen </>** para a equipe **GEN Corp / IFSP**.
